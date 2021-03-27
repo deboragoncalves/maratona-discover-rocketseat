@@ -1,0 +1,23 @@
+{
+  "name": "maratona-discover-rocketseat",
+  "version": "1.0.0",
+  "description": "In development. Maratona Discover Rocketseat - 2021",
+  "main": "studying.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deboragoncalves/maratona-discover-rocketseat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deboragoncalves/maratona-discover-rocketseat/issues"
+  },
+  "homepage": "https://github.com/deboragoncalves/maratona-discover-rocketseat#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
