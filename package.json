@@ -2,9 +2,9 @@
   "name": "maratona-discover-rocketseat",
   "version": "1.0.0",
   "description": "In development. Maratona Discover Rocketseat - 2021",
-  "main": "studying.js",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon ."
   },
   "repository": {
     "type": "git",
