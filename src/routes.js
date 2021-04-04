@@ -103,6 +103,38 @@ const Jobs = {
 
         return response.render(views + "job-edit.ejs", { job: job })
     },
+
+    jobCreatedById: (request, response) => {
+
+        const jobId = request.params.id;
+
+        const job = Jobs.datas.arrayJobs.find(job => Number(job.id) === Number(jobId));
+
+        if (!job) {
+            return response.send("Job not found");
+        }
+
+        const updatedJob = {
+            ...job,
+            name: request.body.name,
+            "total-hours": request.body["total-hours"],
+            "daily-hours": request.body["daily-hours"],
+        }
+
+        // Atualizar
+
+        Jobs.datas.arrayJobs = Jobs.datas.arrayJobs.map(job => {
+
+            if (Number(job.id) === Number(updatedJob.id)) {
+                job = updatedJob;
+            }
+            
+            return job;
+        });
+
+        response.redirect('/job/' + updatedJob.id);
+
+    },
   },
 
   datas: {
@@ -159,6 +191,7 @@ routes.get("", Jobs.controllers.jobsUpdated);
 routes.get("/job", Jobs.controllers.jobEdited);
 routes.post("/job", Jobs.controllers.jobCreated);
 routes.get("/job/:id", Jobs.controllers.showDataJobEdit);
+routes.post("/job/:id", Jobs.controllers.jobCreatedById);
 routes.get("/profile", Profiles.controllers.updateProfile);
 routes.post("/profile", Profiles.controllers.profileCreate);
 
