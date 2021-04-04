@@ -12,8 +12,46 @@ const profile = {
     "vacation-per-year": 4
 }
 
-routes.get("", (request, response) => response.render(views + "index.ejs"));
+const jobs = new Array();
+
+jobs.push({
+    id: 1,
+    name: "Pizzaria Guloso",
+    "daily-hours": 2,
+    "total-hours": 60,
+    createdAt: Date.now()
+});
+
+jobs.push({
+    id: 2,
+    name: "OneTwo Project",
+    "daily-hours": 3,
+    "total-hours": 47,
+    createdAt: Date.now()
+});
+
+routes.get("", (request, response) => response.render(views + "index.ejs", { jobs: jobs }));
 routes.get("/job", (request, response) => response.render(views + "job.ejs"));
+routes.post("/job", (request, response) => { 
+
+    // Request body: dados do form. { name: 'Debora', ... }
+
+    const job = request.body;
+
+    const lastId = jobs[jobs.length - 1]?.id || 1;
+
+    jobs.push({
+        id: lastId++,
+        name: job.name,
+        "daily-hours": job["daily-hours"],
+        "total-hours": job["total-hours"],
+        createdAt: Date.now()
+    }); 
+
+    // Date now: milissegundos desde 1970 
+
+    return response.redirect('/');
+});
 routes.get("/job/edit", (request, response) => response.render(views + "job-edit.ejs"));
 routes.get("/profile", (request, response) => response.render(views + "profile.ejs", { profile: profile }));
 

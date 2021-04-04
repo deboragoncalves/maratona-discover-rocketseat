@@ -4,6 +4,9 @@ const routes = require("./routes");
 
 server.set('view engine', 'ejs');
 
+// Usar body do request
+server.use(express.urlencoded({ extended: true }));
+
 server.use(express.static("public"))
 server.use(routes);
 
