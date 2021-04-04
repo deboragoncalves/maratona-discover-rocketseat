@@ -1,8 +1,6 @@
 const express = require("express");
 const routes = express.Router();
 
-const views = __dirname + "/views/";
-
 const Profiles = {
   data: {
     name: "Débora",
@@ -16,7 +14,7 @@ const Profiles = {
   },
 
   controllers: {
-      updateProfile: (request, response) => response.render(views + "profile.ejs", { profile: Profiles.data }),
+      updateProfile: (request, response) => response.render("profile.ejs", { profile: Profiles.data }),
 
       profileCreate: (request, response) => {
         
@@ -62,7 +60,7 @@ const Jobs = {
         };
       });
 
-      return response.render(views + "index.ejs", { jobs: updatedJobs });
+      return response.render("index.ejs", { jobs: updatedJobs });
     },
 
     jobCreated: (request, response) => {
@@ -86,7 +84,7 @@ const Jobs = {
     },
 
     jobEdited: (request, response) => {
-        return response.render(views + "job.ejs");
+        return response.render("job.ejs");
     },
 
     showDataJobEdit: (request, response) => { 
@@ -101,7 +99,7 @@ const Jobs = {
             return response.send("Job not found");
         }
 
-        return response.render(views + "job-edit.ejs", { job: job })
+        return response.render("job-edit.ejs", { job: job })
     },
 
     jobUpdatedById: (request, response) => {
