@@ -104,7 +104,7 @@ const Jobs = {
         return response.render(views + "job-edit.ejs", { job: job })
     },
 
-    jobCreatedById: (request, response) => {
+    jobUpdatedById: (request, response) => {
 
         const jobId = request.params.id;
 
@@ -125,16 +125,26 @@ const Jobs = {
 
         Jobs.datas.arrayJobs = Jobs.datas.arrayJobs.map(job => {
 
-            if (Number(job.id) === Number(updatedJob.id)) {
+            if (Number(job.id) === Number(jobId)) {
                 job = updatedJob;
             }
             
             return job;
         });
 
-        response.redirect('/job/' + updatedJob.id);
+        response.redirect('/job/' + jobId);
 
     },
+
+    jobDeletedById: (request, response) => {
+
+        const jobId = request.params.id;
+
+        Jobs.datas.arrayJobs = Jobs.datas.arrayJobs.filter(job => Number(job.id) !== Number(jobId));
+
+        return response.redirect('/');
+
+    }
   },
 
   datas: {
@@ -191,7 +201,8 @@ routes.get("", Jobs.controllers.jobsUpdated);
 routes.get("/job", Jobs.controllers.jobEdited);
 routes.post("/job", Jobs.controllers.jobCreated);
 routes.get("/job/:id", Jobs.controllers.showDataJobEdit);
-routes.post("/job/:id", Jobs.controllers.jobCreatedById);
+routes.post("/job/:id", Jobs.controllers.jobUpdatedById);
+routes.post("/job/delete/:id", Jobs.controllers.jobDeletedById);
 routes.get("/profile", Profiles.controllers.updateProfile);
 routes.post("/profile", Profiles.controllers.profileCreate);
 
