@@ -3,107 +3,128 @@ const routes = express.Router();
 
 const views = __dirname + "/views/";
 
-const profile = {
+const Profiles = {
+  data: {
     name: "Débora",
-    avatar: "https://media-exp1.licdn.com/dms/image/C4D03AQFvSDG5L4z6BA/profile-displayphoto-shrink_800_800/0/1610104702023?e=1622678400&v=beta&t=jP6j9SPGyZILlMv0PB_tdzPo5AvPnHu9gyr5j0F_lsg",
+    avatar:
+      "https://media-exp1.licdn.com/dms/image/C4D03AQFvSDG5L4z6BA/profile-displayphoto-shrink_800_800/0/1610104702023?e=1622678400&v=beta&t=jP6j9SPGyZILlMv0PB_tdzPo5AvPnHu9gyr5j0F_lsg",
     "monthly-budget": 3000,
     "days-per-week": 5,
     "hours-per-day": 8,
     "vacation-per-year": 4,
-    "value-hour": 75
-}
+    "value-hour": 75,
+  },
 
-const jobs = new Array();
+  controllers: {
+      updateProfile: (request, response) => response.render(views + "profile.ejs", { profile: Profiles.data }),
 
-jobs.push({
-    id: 1,
-    name: "Pizzaria Guloso",
-    "daily-hours": 2,
-    "total-hours": 60,
-    createdAt: Date.now()
-});
+      update: () => {
 
-jobs.push({
-    id: 2,
-    name: "OneTwo Project",
-    "daily-hours": 3,
-    "total-hours": 47,
-    createdAt: Date.now()
-});
-
-let remainingDays = job => {
-
-        // Prazo em dias
-
-        // To fixed: retorna string
-
-        const remainingDays = (job["total-hours"] / job["daily-hours"]).toFixed();
-
-        const dateCreated = new Date(job["createdAt"]);
-
-        // Dia final
-
-        const dueDay = dateCreated.getDate() + Number(remainingDays);
-
-        // Data final ms
-
-        const dueDateMs = dateCreated.setDate(dueDay);
-
-        const differenceMs = dueDateMs - Date.now();
-
-        // 1000 * 60 = s * 60 = h * 24 = d
-
-        const daysMs = 1000 * 60 * 60 * 24;
-
-        const deadline = Math.floor(differenceMs / daysMs);
-
-        return deadline;
+      },
+  }
 };
 
-routes.get("", (request, response) => {
+const Jobs = {
+  controllers: {
+    jobsUpdated(request, response) {
+      // Map: novo array job
 
-    // Map: novo array job
+      const updatedJobs = Jobs.datas.arrayJobs.map((job) => {
+        const deadline = Jobs.datas.remainingDays(job);
+        const status = deadline <= 0 ? "done" : "progress";
 
-    const updatedJobs = jobs.map(job => {
-
-        const deadline = remainingDays(job);
-        const status = deadline <= 0 ? 'done' : 'progress';
-
-        const budget = profile["value-hour"] * job["total-hours"];
+        const budget = Profiles.data["value-hour"] * job["total-hours"];
 
         return {
-            ...job,
-            deadline,
-            status,
-            budget
+          ...job,
+          deadline,
+          status,
+          budget,
         };
-    });
+      });
 
-    return response.render(views + "index.ejs", { jobs: updatedJobs })
+      return response.render(views + "index.ejs", { jobs: updatedJobs });
+    },
 
-});
-routes.get("/job", (request, response) => response.render(views + "job.ejs"));
-routes.post("/job", (request, response) => { 
+    jobCreated: (request, response) => {
+      // Request body: dados do form. { name: 'Debora', ... }
 
-    // Request body: dados do form. { name: 'Debora', ... }
+      const job = request.body;
 
-    const job = request.body;
+      const lastId = jobs[jobs.length - 1]?.id || 1;
 
-    const lastId = jobs[jobs.length - 1]?.id || 1;
-
-    jobs.push({
+      Jobs.datas.arrayJobs.push({
         id: lastId + 1,
         name: job.name,
         "daily-hours": job["daily-hours"],
         "total-hours": job["total-hours"],
-        createdAt: Date.now()
-    }); 
+        createdAt: Date.now(),
+      });
 
-    // Date now: milissegundos desde 1970 
+      // Date now: milissegundos desde 1970
 
-    return response.redirect('/');
-});
-routes.get("/job/edit", (request, response) => response.render(views + "job-edit.ejs"));
-routes.get("/profile", (request, response) => response.render(views + "profile.ejs", { profile: profile }));
+      return response.redirect("/");
+    },
+
+    jobEdited: (request, response) => {
+        return response.render(views + "job.ejs");
+    },
+  },
+
+  datas: {
+    remainingDays: (job) => {
+      // Prazo em dias
+
+      // To fixed: retorna string
+
+      const remainingDays = (job["total-hours"] / job["daily-hours"]).toFixed();
+
+      const dateCreated = new Date(job["createdAt"]);
+
+      // Dia final
+
+      const dueDay = dateCreated.getDate() + Number(remainingDays);
+
+      // Data final ms
+
+      const dueDateMs = dateCreated.setDate(dueDay);
+
+      const differenceMs = dueDateMs - Date.now();
+
+      // 1000 * 60 = s * 60 = h * 24 = d
+
+      const daysMs = 1000 * 60 * 60 * 24;
+
+      const deadline = Math.floor(differenceMs / daysMs);
+
+      return deadline;
+    },
+
+    arrayJobs: [
+      {
+        id: 1,
+        name: "Pizzaria Guloso",
+        "daily-hours": 2,
+        "total-hours": 60,
+        createdAt: Date.now(),
+      },
+      {
+        id: 2,
+        name: "OneTwo Project",
+        "daily-hours": 3,
+        "total-hours": 47,
+        createdAt: Date.now(),
+      },
+    ],
+  },
+};
+
+routes.get("", Jobs.controllers.jobsUpdated);
+routes.get("/job", Jobs.controllers.jobEdited);
+routes.post("/job", Jobs.controllers.jobCreated);
+routes.get("/job/edit", (request, response) =>
+  response.render(views + "job-edit.ejs")
+);
+routes.get("/profile", Profiles.controllers.updateProfile);
 
 module.exports = routes;
