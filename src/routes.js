@@ -70,7 +70,7 @@ const Jobs = {
 
       const job = request.body;
 
-      const lastId = Jobs.datas.arrayJobs[Jobs.datas.arrayJobs.length - 1]?.id || 1;
+      const lastId = Jobs.datas.arrayJobs[Jobs.datas.arrayJobs.length - 1]?.id || 0;
 
       Jobs.datas.arrayJobs.push({
         id: lastId + 1,
