@@ -1,45 +1,7 @@
 const express = require("express");
 const routes = express.Router();
-
-const Profiles = {
-  data: {
-    name: "Débora",
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4D03AQFvSDG5L4z6BA/profile-displayphoto-shrink_800_800/0/1610104702023?e=1622678400&v=beta&t=jP6j9SPGyZILlMv0PB_tdzPo5AvPnHu9gyr5j0F_lsg",
-    "monthly-budget": 3000,
-    "days-per-week": 5,
-    "hours-per-day": 8,
-    "vacation-per-year": 4,
-    "value-hour": 75,
-  },
-
-  controllers: {
-      updateProfile: (request, response) => response.render("profile.ejs", { profile: Profiles.data }),
-
-      profileCreate: (request, response) => {
-        
-        const dataProfile = request.body;
-
-        const weeksYear = 52;
-
-        const weeksMonth = (weeksYear - dataProfile["vacation-per-year"]) / 12;
-
-        // Horas trabalhadas semana e mês
-
-        const workHoursWeek = dataProfile["days-per-week"] * dataProfile["hours-per-day"];
-
-        const workHoursMonth = workHoursWeek * weeksMonth;
-
-        dataProfile["value-hour"] = dataProfile["monthly-budget"] / workHoursMonth;
-
-        // Atualizar data
-
-        Profiles.data = dataProfile;
-
-        return response.redirect('/profile');
-      },
-  }
-};
+const profileController = require("./controllers/profile-controller");
+const profile = require("./model/profile");
 
 const Jobs = {
   controllers: {
@@ -50,7 +12,7 @@ const Jobs = {
         const deadline = Jobs.datas.remainingDays(job);
         const status = deadline <= 0 ? "done" : "progress";
 
-        const budget = Jobs.datas.calculateBudget(job, Profiles.data["value-hour"]);
+        const budget = Jobs.datas.calculateBudget(job, profile["value-hour"]);
 
         return {
           ...job,
@@ -93,7 +55,7 @@ const Jobs = {
 
         const job = Jobs.datas.arrayJobs.find(job => Number(job.id) === Number(jobId));
 
-        job.budget = Jobs.datas.calculateBudget(job, Profiles.data["value-hour"]);
+        job.budget = Jobs.datas.calculateBudget(job, profile["value-hour"]);
 
         if (!job) {
             return response.send("Job not found");
@@ -201,7 +163,7 @@ routes.post("/job", Jobs.controllers.jobCreated);
 routes.get("/job/:id", Jobs.controllers.showDataJobEdit);
 routes.post("/job/:id", Jobs.controllers.jobUpdatedById);
 routes.post("/job/delete/:id", Jobs.controllers.jobDeletedById);
-routes.get("/profile", Profiles.controllers.updateProfile);
-routes.post("/profile", Profiles.controllers.profileCreate);
+routes.get("/profile", profileController.updateProfile);
+routes.post("/profile", profileController.profileCreate);
 
 module.exports = routes;
