@@ -52,7 +52,7 @@ const Jobs = {
         const deadline = Jobs.datas.remainingDays(job);
         const status = deadline <= 0 ? "done" : "progress";
 
-        const budget = Profiles.data["value-hour"] * job["total-hours"];
+        const budget = Jobs.datas.calculateBudget(job, Profiles.data["value-hour"]);
 
         return {
           ...job,
@@ -70,7 +70,7 @@ const Jobs = {
 
       const job = request.body;
 
-      const lastId = jobs[jobs.length - 1]?.id || 1;
+      const lastId = Jobs.datas.arrayJobs[Jobs.datas.arrayJobs.length - 1]?.id || 1;
 
       Jobs.datas.arrayJobs.push({
         id: lastId + 1,
@@ -87,6 +87,21 @@ const Jobs = {
 
     jobEdited: (request, response) => {
         return response.render(views + "job.ejs");
+    },
+
+    showDataJobEdit: (request, response) => { 
+
+        const jobId = request.params.id;
+
+        const job = Jobs.datas.arrayJobs.find(job => Number(job.id) === Number(jobId));
+
+        job.budget = Jobs.datas.calculateBudget(job, Profiles.data["value-hour"]);
+
+        if (!job) {
+            return response.send("Job not found");
+        }
+
+        return response.render(views + "job-edit.ejs", { job: job })
     },
   },
 
@@ -135,15 +150,15 @@ const Jobs = {
         createdAt: Date.now(),
       },
     ],
+
+    calculateBudget: (job, valueHours) => valueHours * job["total-hours"],
   },
 };
 
 routes.get("", Jobs.controllers.jobsUpdated);
 routes.get("/job", Jobs.controllers.jobEdited);
 routes.post("/job", Jobs.controllers.jobCreated);
-routes.get("/job/edit", (request, response) =>
-  response.render(views + "job-edit.ejs")
-);
+routes.get("/job/:id", Jobs.controllers.showDataJobEdit);
 routes.get("/profile", Profiles.controllers.updateProfile);
 routes.post("/profile", Profiles.controllers.profileCreate);
 
