@@ -19,9 +19,13 @@ module.exports = {
 
       dataProfile["value-hour"] = dataProfile["monthly-budget"] / workHoursMonth;
 
-      // Atualizar data
+      // Atualizar dados
 
-      profile.get() = dataProfile;
+      profile.update({
+        ...profile.get(),
+        ...request.body,
+        "value-hour": dataProfile["value-hour"]
+      });
 
       return response.redirect('/profile');
     }
