@@ -2,9 +2,9 @@ const express = require("express");
 const routes = express.Router();
 const profileController = require("./controllers/profile-controller");
 const jobController = require("./controllers/job-controller");
-const profile = require("./model/profile");
+const dashboardController = require("./controllers/dashboard-controller");
 
-routes.get("", jobController.jobsUpdated);
+routes.get("/", dashboardController.jobsUpdated);
 routes.get("/job", jobController.jobEdited);
 routes.post("/job", jobController.jobCreated);
 routes.get("/job/:id", jobController.showDataJobEdit);
