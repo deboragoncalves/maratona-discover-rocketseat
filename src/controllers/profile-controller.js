@@ -1,9 +1,11 @@
 const profile = require('../model/profile.js');
 
 module.exports = {
-    updateProfile: (request, response) => response.render("profile.ejs", { profile: profile.get() }),
+    async updateProfile(request, response) {
+      response.render("profile.ejs", { profile: await profile.get() })
+    },
 
-    profileCreate: (request, response) => {
+    async profileCreate(request, response) {
       
       const dataProfile = request.body;
 
@@ -21,8 +23,8 @@ module.exports = {
 
       // Atualizar dados
 
-      profile.update({
-        ...profile.get(),
+      await profile.update({
+        ... await profile.get(),
         ...request.body,
         "value-hour": dataProfile["value-hour"]
       });

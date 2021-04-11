@@ -21,8 +21,8 @@ const initDb = {
             avatar TEXT NOT NULL,
             monthly_budget INTEGER NOT NULL,
             days_per_week INTEGER NOT NULL,
-            hours_per_week INTEGER NOT NULL,
-            vacation_per_day INTEGER NOT NULL,
+            hours_per_day INTEGER NOT NULL,
+            vacation_per_year INTEGER NOT NULL,
             value_hour INTEGER NOT NULL
         )`);
 
@@ -31,8 +31,8 @@ const initDb = {
             avatar,
             monthly_budget,
             days_per_week,
-            hours_per_week,
-            vacation_per_day,
+            hours_per_day,
+            vacation_per_year,
             value_hour
         ) VALUES (
             'Débora',
