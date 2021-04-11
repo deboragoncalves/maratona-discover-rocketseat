@@ -82,11 +82,11 @@ module.exports = {
 
     },
 
-    jobDeletedById: (request, response) => {
+    async jobDeletedById(request, response) {
 
         const jobId = request.params.id;
 
-        dataJob.delete(jobId);
+        await dataJob.delete(jobId);
 
         return response.redirect('/');
 

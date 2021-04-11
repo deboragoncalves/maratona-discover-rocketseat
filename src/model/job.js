@@ -37,8 +37,16 @@ module.exports = {
         data = jobsUpdated;
     },
 
-    delete: (jobId) => {
-        data = data.filter(job => Number(job.id) !== Number(jobId));
+    async delete(jobId) {
+
+        const connectDb = await configDb();
+
+        await connectDb.run(`DELETE FROM job WHERE
+        id = ${jobId}
+        `);
+
+        await connectDb.close();
+
     },
 
     async add(job) {
