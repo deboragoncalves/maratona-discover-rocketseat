@@ -4,22 +4,17 @@ const dataProfile = require("../model/profile");
 
 module.exports = {
   
-    jobCreated: (request, response) => {
-
-      const jobs = dataJob.get();
+    async jobCreated(request, response) {
 
       // Request body: dados do form. { name: 'Debora', .. }
 
       const job = request.body;
 
-      const lastId = jobs[jobs.length - 1]?.id || 0;
-
-      dataJob.add({
-        id: lastId + 1,
+      await dataJob.add({
         name: job.name,
         "daily-hours": job["daily-hours"],
         "total-hours": job["total-hours"],
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
 
       // Date now: milissegundos desde 1970
@@ -31,10 +26,10 @@ module.exports = {
         return response.render("job.ejs");
     },
 
-    showDataJobEdit: (request, response) => { 
+    async showDataJobEdit(request, response) { 
         
-      const jobs = dataJob.get();
-      const profile = dataProfile.get();
+      const jobs = await dataJob.get();
+      const profile = await dataProfile.get();
 
         const jobId = request.params.id;
 
@@ -49,9 +44,9 @@ module.exports = {
         return response.render("job-edit.ejs", { job: job })
     },
 
-    jobUpdatedById: (request, response) => {
+    async jobUpdatedById (request, response) {
 
-      const jobs = dataJob.get();
+      const jobs = await dataJob.get();
 
         const jobId = request.params.id;
 

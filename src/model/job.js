@@ -1,25 +1,36 @@
-let data = [
-    {
-        id: 1,
-        name: "Pizzaria Guloso",
-        "daily-hours": 2,
-        "total-hours": 60,
-        createdAt: Date.now(),
-    },
-    {
-        id: 2,
-        name: "OneTwo Project",
-        "daily-hours": 3,
-        "total-hours": 47,
-        createdAt: Date.now(),
-    },
-]
+const configDb = require('../db/config');
 
 // Model: dados. alteração dos dados através dos métodos
 
 module.exports = {
-    get: () => { 
-        return data 
+    async get() { 
+
+        const connectDb = await configDb();
+
+        // All
+
+        const dataDb = await connectDb.all(`SELECT * FROM job`);
+
+        connectDb.close();
+
+        let allJobs = new Array();
+
+        for (job of dataDb) {
+
+            const newData = {
+                id: job.id,
+                name: job.name,
+                "daily-hours": job.daily_hours,
+                "total-hours": job.total_hours,
+                "createdAt": job.created_at
+            };
+
+            allJobs.push(newData);
+
+        }
+
+        return allJobs;
+        
     },
 
     update: (jobsUpdated) => {
@@ -30,8 +41,22 @@ module.exports = {
         data = data.filter(job => Number(job.id) !== Number(jobId));
     },
 
-    add: (job) => {
-        data.push(job);
+    async add(job) {
+        const connectDb = await configDb();
+
+        await connectDb.run(`INSERT INTO job (
+            name, 
+            daily_hours, 
+            total_hours, 
+            created_at) 
+            VALUES 
+            ('${job.name}',
+            ${job["daily-hours"]},
+            ${job["total-hours"]},
+            ${job.createdAt}
+            )`);
+
+        await connectDb.close();
     }
 }
 

@@ -6,7 +6,7 @@ module.exports = {
 
      async jobsUpdated(request, response) {
 
-        const jobs = dataJob.get();
+        const jobs = await dataJob.get();
 
         // Get lá no profile é aysnc, tem awaits
         // Quando chama tb deve ter awaits, para terminar tudo 
@@ -23,7 +23,7 @@ module.exports = {
 
         // Map: novo array job
 
-        const updatedJobs = jobs.map((job) => {
+        const updatedJobs = await jobs.map((job) => {
             const deadline = jobUtils.remainingDays(job);
             const status = deadline <= 0 ? "done" : "progress";
 
