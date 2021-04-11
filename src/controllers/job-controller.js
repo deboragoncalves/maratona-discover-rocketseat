@@ -1,6 +1,6 @@
 const dataJob = require("../model/job");
 const jobUtils = require("../utils/job-utils");
-const profile = require("../model/profile");
+const dataProfile = require("../model/profile");
 
 module.exports = {
   
@@ -34,13 +34,13 @@ module.exports = {
     showDataJobEdit: (request, response) => { 
         
       const jobs = dataJob.get();
-      const profiles = profile.get();
+      const profile = dataProfile.get();
 
         const jobId = request.params.id;
 
         const job = jobs.find(job => Number(job.id) === Number(jobId));
 
-        job.budget = jobUtils.calculateBudget(job, profiles["value-hour"]);
+        job.budget = jobUtils.calculateBudget(job, profile["value-hour"]);
 
         if (!job) {
             return response.send("Job not found");
