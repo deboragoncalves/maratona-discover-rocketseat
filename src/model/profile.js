@@ -1,22 +1,33 @@
-let data = {
-  name: "Débora",
-  avatar:
-    "https://media-exp1.licdn.com/dms/image/C4D03AQFvSDG5L4z6BA/profile-displayphoto-shrink_800_800/0/1610104702023?e=1622678400&v=beta&t=jP6j9SPGyZILlMv0PB_tdzPo5AvPnHu9gyr5j0F_lsg",
-  "monthly-budget": 3000,
-  "days-per-week": 5,
-  "hours-per-day": 8,
-  "vacation-per-year": 4,
-  "value-hour": 75,
-};
+const configDb = require("../db/config");
 
 module.exports = {
-  get: () => {
-    return data;
+  async get() {
+    const connectDb = await configDb();
+
+    // Get: busca um dado (json)
+
+    const dataDb = await connectDb.get(`SELECT * FROM profile`);
+
+    await connectDb.close();
+
+    // Substituir para _ para -
+
+    const newData = {
+      name: dataDb.name,
+      avatar: dataDb.avatar,
+      "monthly-budget": dataDb.monthly_budget,
+      "days-per-week": dataDb.days_per_week,
+      "hours-per-week": dataDb.hours_per_week,
+      "vacation-per-year": dataDb.vacation_per_year,
+      "value-hour": dataDb.value_hour,
+    };
+
+    return newData;
   },
 
   // Const não pode ser alterada
 
   update: (profileData) => {
     data = profileData;
-  }
-}
+  },
+};

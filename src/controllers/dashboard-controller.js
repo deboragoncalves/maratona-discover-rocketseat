@@ -4,10 +4,14 @@ const profile = require('../model/profile');
 
 module.exports = {
 
-    jobsUpdated(request, response) {
+     async jobsUpdated(request, response) {
 
         const jobs = dataJob.get();
-        const profiles = profile.get();
+
+        // Get lá no profile é aysnc, tem awaits
+        // Quando chama tb deve ter awaits, para terminar tudo 
+        // jobsUpdate é aysnc
+        const profiles = await profile.get();
 
         let statusJobs = {
             progress: 0,

@@ -82,3 +82,5 @@ const initDb = {
 }
 
 initDb.init();
+
+// Beekeeper: programa que mostra as tabelas e campos
