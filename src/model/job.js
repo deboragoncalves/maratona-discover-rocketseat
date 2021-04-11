@@ -28,6 +28,10 @@ module.exports = {
 
     delete: (jobId) => {
         data = data.filter(job => Number(job.id) !== Number(jobId));
+    },
+
+    add: (job) => {
+        data.push(job);
     }
 }
 

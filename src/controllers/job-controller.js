@@ -14,7 +14,7 @@ module.exports = {
 
       const lastId = jobs[jobs.length - 1]?.id || 0;
 
-      jobs.push({
+      dataJob.add({
         id: lastId + 1,
         name: job.name,
         "daily-hours": job["daily-hours"],
