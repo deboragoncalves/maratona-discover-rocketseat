@@ -49,7 +49,7 @@ const initDb = {
             name TEXT NOT NULL,
             daily_hours INTEGER NOT NULL,
             total_hours INTEGER NOT NULL,
-            created_at DATETIME NOT NULL
+            created_at DATETIME
         )`);
 
         await connectDb.run(`INSERT INTO job (

@@ -33,8 +33,18 @@ module.exports = {
         
     },
 
-    update: (jobsUpdated) => {
-        data = jobsUpdated;
+    async update(jobUpdated, jobId) {
+        const connectDb = await configDb();
+
+        await connectDb.run(`UPDATE job SET
+        name = '${jobUpdated.name}',
+        daily_hours = ${jobUpdated["daily-hours"]},
+        total_hours = ${jobUpdated["total-hours"]}
+        WHERE 
+        id = ${jobId}`)
+
+        await connectDb.close();
+
     },
 
     async delete(jobId) {

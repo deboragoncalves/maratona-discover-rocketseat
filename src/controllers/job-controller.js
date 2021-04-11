@@ -46,37 +46,17 @@ module.exports = {
 
     async jobUpdatedById (request, response) {
 
-      const jobs = await dataJob.get();
-
         const jobId = request.params.id;
 
-        const job = jobs.find(job => Number(job.id) === Number(jobId));
-
-        if (!job) {
-            return response.send("Job not found");
-        }
-
         const updatedJob = {
-            ...job,
             name: request.body.name,
             "total-hours": request.body["total-hours"],
             "daily-hours": request.body["daily-hours"],
         }
 
-        // Atualizar
+        // Atualizar o job no model, passando o id
 
-        const newJobs = jobs.map(job => {
-
-            if (Number(job.id) === Number(jobId)) {
-                job = updatedJob;
-            }
-            
-            return job;
-        });
-
-        // Atualizar o job no model
-
-        dataJob.update(newJobs);
+        await dataJob.update(updatedJob, jobId);
 
         response.redirect('/job/' + jobId);
 
